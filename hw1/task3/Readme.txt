@@ -22,4 +22,13 @@ Again the same rules apply, i.e. the output folder MUST NOT already exist.
 
 The file B is assumed to be in s3://niketsbucket/word-patterns.txt. Make sure you have the input text to be matched in a file by the same name under a bucket of the same name. Again this value is hardcoded for brevity.
 
+output links: 
+https://s3.amazonaws.com/niketsbucket/output3/_SUCCESS
+https://s3.amazonaws.com/niketsbucket/output3/part-00000
+https://s3.amazonaws.com/niketsbucket/output3/part-00001
+https://s3.amazonaws.com/niketsbucket/output3/part-00002
+https://s3.amazonaws.com/niketsbucket/output3/part-00003
+https://s3.amazonaws.com/niketsbucket/output3/part-00004
+https://s3.amazonaws.com/niketsbucket/output3/part-00005
+https://s3.amazonaws.com/niketsbucket/output3/part-00006
 =============================================================================================================================================== 

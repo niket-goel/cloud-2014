@@ -19,4 +19,13 @@ wordcountdouble s3://<bucket-name>/<path-to-input> s3://<bucket-name>/<path-to-o
 
 Again the same rules apply, i.e. the output folder MUST NOT already exist.
 
+output links: 
+https://s3.amazonaws.com/niketsbucket/output2/_SUCCESS
+https://s3.amazonaws.com/niketsbucket/output2/part-00000
+https://s3.amazonaws.com/niketsbucket/output2/part-00001
+https://s3.amazonaws.com/niketsbucket/output2/part-00002
+https://s3.amazonaws.com/niketsbucket/output2/part-00003
+https://s3.amazonaws.com/niketsbucket/output2/part-00004
+https://s3.amazonaws.com/niketsbucket/output2/part-00005
+https://s3.amazonaws.com/niketsbucket/output2/part-00006
 =============================================================================================================================================== 
