@@ -1,0 +1,85 @@
+This program computes the page rank of a graph, given the input graph as an
+adjacency list.
+
+<output-folder>/Output_sorted has the final output.
+CODE DESIGN :
+================================================================================
+The code consists of three map reduce jobs:
+Job1 -- Metadata calculation
+  In this job, the Mapper emits the outdegree of each node, by counting its
+  neighbors and the reducer collects them to compute various parameters like
+  max outdegree, min outdegree, total nodes etc.
+  The mapper emits this information redundantly in three different keys, just so
+  that more reducers can be run on the data, and the execution is fast.
+  The output of this job is saved in <output-folder>/Metadata
+
+Job2 -- PageRank computation
+  This job runs 15 number of times to converge to an output page rank. The Mapper
+  emits the page rank for each node based on the following formula:
+    PR = (1-d)+d*(page rank of incoming node/number of neighbors)
+   where d is the damping factor, set to 0.85 from the PageRank studies.
+  It also emits the neighbor list to get the graph structure in the next iteration
+
+  The Reducer collects both these things and processes them selectively. Which
+  means if it is a page rank, it sums it up. If it is a neighbor, it will append
+  it to an adjacency string.
+
+Job3 -- Sorting
+  Finally the output from the converged page ranks is sorted using another map
+  reduce job, in which the mapper just emits the page rank as the key and the
+  node id  as the value.
+  Hadoop automatically sorts the keys between map and reduce jobs.
+  The only catch is that we force a single reducer to do the job.
+  The output is available in the <output-folder>/Output_sorted
+
+The usage is the following :
+================================================================================
+FutureGrid:
+#$HADOOP_HOME/bin/hadoop --config $HADOOP_CONF_DIR jar
+                                    pageRank.jar <input folder> <output folder>
+
+A few things to keep in mind are:
+1. Both the input and output files are assumed to be in HDFS. This means that
+  before running the code the input files must be copied into HDFS and the output
+  has to be copied out of HDFS to the local filesystem.
+2. The program will not work if the <output folder> already exists.
+
+================================================================================
+Amazon AWS:
+After creating the cluster on EMR, you need to add a step to execute a custom jar.
+All the files are read from and written to an s3 bucket. The jar itself must
+also be placed in an s3 bucket. The exact location of the custom jar must be
+specified in the path-to-jar.
+
+The arguments must be given as:
+s3://<bucket-name>/<path-to-input> s3://<bucket-name>/<path-to-output>
+
+Again the same rules apply, i.e. the output folder MUST NOT already exist.
+
+
+S3 output links :
+small input
+https://s3.amazonaws.com/niketsbucket/hw2/outputs/
+
+medium input
+https://s3.amazonaws.com/niketsbucket/hw2/outputMedium/
+
+large input
+https://s3.amazonaws.com/niketsbucket/hw2/outputLarge/
+
+================================================================================
+
+Comparison
+================================================================================
+
+(Due to problems with FutureGrid a job blocking the entire batch for about 180hrs
+, we ran the jobs on a personal cluster made using containers having 4 nodes. The 
+cluster was setup and running running on Alok Nandan Nikhil's system 
+(screenshots attached).)
+
+The jobs run way faster on the cluster than on AWS S3. The average time was 30 minutes 
+on AWS, where it was about 1 minute on the other platform.
+This is because AWS uses YARN for provisioning and cluster management, which
+takes a lot of time in provisioning and synchronizing all the nodes in the
+cluster.
+
